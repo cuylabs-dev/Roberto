@@ -1,0 +1,16 @@
+# Secretos y entorno
+.env
+
+# Dependencias
+node_modules/
+
+# Datos generados en cada corrida
+data/
+*.log
+
+# Perfil de Chrome persistente (cuentas FB/IG)
+chrome-profile/
+
+# Sistema
+.DS_Store
+Thumbs.db
