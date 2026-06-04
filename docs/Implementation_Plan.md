@@ -1,8 +1,21 @@
-# Implementation Plan — Investigador de Prospectos (v6, robusto)
+# Implementation Plan — Investigador de Prospectos (v7, fábrica + Guantelete)
 
-> Evolución del plan v5. Cierra las 3 brechas críticas que detectó la auditoría de arquitectura:
-> **(1) Contrato de Datos único · (2) Enums cerrados · (3) Contrato de URL.**
-> Costo operativo objetivo: **$0/mes**. Capacidad: ~10 leads/día.
+> **v7 (jun 2026):** Brand Kit (`?kit=slug`), router multi-API (Guantelete), Vercel Blob CDN, deploy factoría solo vía **`git push`** (GitHub → Vercel). Sin Together AI.
+>
+> v6: Contrato de Datos · Enums cerrados · Contrato URL legacy (`pri`, `head`, `sec`).
+> Costo: **$0/mes** con APIs gratuitas. Capacidad: **20 leads/día** (balance 5 nichos).
+
+### v7 — componentes nuevos
+
+| Pieza | Archivo |
+|-------|---------|
+| Router LLM | `lib/llm/router.js`, `lib/llm/providers.js` |
+| Brand kit | `lib/brandKit.js`, `lib/kitStorage.js` |
+| Rehost fotos | `lib/imageRehost.js` |
+| Maqueta corta | `lib/urls.js` → `?kit=` |
+| Factoría kit | `Plantillas/src/lib/kit.ts`, `api/kit/[slug].js` |
+
+Docs: [LOGICA_PASOS.md](LOGICA_PASOS.md), [HANDOFF_COLABORADOR.md](HANDOFF_COLABORADOR.md), [COMANDOS_PUSH.md](COMANDOS_PUSH.md).
 
 ---
 
@@ -29,6 +42,10 @@ Mismos nombres y tipos en todo el pipeline: **Scraper → Gemini → Notion**.
   "color":       "blue | green | red | violet | orange | slate",
   "font":        "inter | roboto | poppins | montserrat",
   "blocks":      ["login","reservas","ecommerce","galeria"], // 0+ módulos
+  "sections":    ["hero","planes","faq","contacto"],         // ?sec= en URL (6-10)
+  "opportunity_score": 72,          // 0-100 calificación web
+  "pitch_angle": "string",          // diagnóstico comercial
+  "gaps":        ["sin_sitio_web"], // brechas detectadas
   "maqueta_url": "string (URL)",    // construida en Fase 3
   "wa_text":     "string",          // copy de WhatsApp (máx 3 líneas)
   "wa_link":     "string (URL)",    // wa.me/51...?text=...
@@ -67,7 +84,7 @@ Gemini **debe** elegir solo de estas listas. El código valida y, si algo no enc
 Nombres de parámetros **idénticos** en el generador y en la factoría React. Si uno cambia, ambos cambian.
 
 ```
-https://<tu-factoria>.vercel.app/?cliente=<URLencoded>&template=<template>&color=<color>&font=<font>&blocks=<csv>
+https://<tu-factoria>.vercel.app/?cliente=<URLencoded>&template=<template>&color=<color>&font=<font>&blocks=<csv>&sec=<csv>
 ```
 Ejemplo:
 ```
@@ -95,11 +112,18 @@ Normalización de teléfono: quitar espacios/guiones/paréntesis, anteponer `51`
 3. Crear `.env` a partir de `.env.example` (Gemini, Notion, perfil Chrome, nicho).
 4. Crear la propiedad `Estado` y `Fuente Contacto` (Select) en la DB de Notion, y las opciones de `Template Asignado`.
 
+## FASE 1.5 — Calificación web (`lib/qualify.js`)
+1. **Filtro rápido:** `data/chains.json` + señales de nombre (outlet, kids, mall).
+2. **Auditoría HTTP:** fetch home (8s), heurísticas ecommerce / web débil.
+3. **Gemini borderline:** score 40–75 o nicho tienda/corporativo.
+4. **Hard skip** si `opportunity_score < QUALIFY_MIN_SCORE` (default 65) — no Notion ni maqueta.
+5. Log en `data/skipped_YYYYMMDD.json`.
+
 ## FASE 2 — Scraper Resiliente
-1. Busca en Google Maps con stealth + delays aleatorios.
+1. Busca en Google Maps con stealth + delays aleatorios + **oversample** (`QUALIFY_OVERSAMPLE`).
 2. Fallback FB/IG con perfil persistente (cuentas burner) si falta teléfono.
 3. Detecta captchas (screenshot + `Revisar`), nunca los "ignora a ciegas".
-4. Ignora negocios sin ningún dato de contacto (los marca `Revisar`).
+4. Descarta cadenas en FASE 1 (fast) antes de gastar cupo diario.
 
 ## FASE 3 — Cerebro Analítico y Personalizador (Gemini)
 1. Analiza falencias del negocio.
