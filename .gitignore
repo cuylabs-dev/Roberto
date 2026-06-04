@@ -1,5 +1,9 @@
-# Secretos y entorno
+# Secretos y entorno (NUNCA commitear)
 .env
+.env.*
+!.env.example
+*.pem
+credentials*.json
 
 # Dependencias
 node_modules/

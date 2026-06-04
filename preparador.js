@@ -1,5 +1,5 @@
 // ============================================================================
-// preparador.js — Bucle Outbound B2B (Investigador de Prospectos)
+// preparador.js — Bucle Outbound B2B (Roberto / Investigador de Prospectos)
 //   Fase 1: scrapeMaps() por nicho (oversample + filtro rapido cadenas)
 //   Fase 1.5: qualifyLead() — auditoria web, hard skip bajo umbral
 //   Fase 2: enrichFromSocial()   -> fallback FB/IG (perfil "cuy")
@@ -64,7 +64,7 @@ async function main() {
   }
 
   const plan = planBusquedas(config.leadsPerDay);
-  log(`=== Investigador de Prospectos ${DRY_RUN ? "(DRY-RUN)" : "(PRODUCCION)"} ===`);
+  log(`=== Roberto — Prospectos ${DRY_RUN ? "(DRY-RUN)" : "(PRODUCCION)"} ===`);
   log(`Modo busqueda: ${config.searchMode} | Plan: ${describePlan(plan)}`);
   log(`Total objetivo: ${config.leadsPerDay} leads | Calificacion min: ${config.qualifyMinScore}`);
 

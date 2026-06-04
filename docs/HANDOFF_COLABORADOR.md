@@ -18,7 +18,7 @@ Documento para quien refine **plantillas** o mantenga el **Investigador** (Node)
 
 |------|----------|-----------------|
 
-| **Investigador_Prospectos** | Scrape Maps, brand kit, maquetas, Notion | Local (`Investigador.bat`) |
+| **Roberto** (`Investigador_Prospectos/`) | Scrape Maps, brand kit, maquetas, Notion | Local (`Roberto.bat`) · backup [cuylabs-dev/Roberto](https://github.com/cuylabs-dev/Roberto) |
 
 | **Plantillas-Web-Maestra** | 5 landings React (`?kit=` o URL legacy) | **`git push origin main`** → GitHub → Vercel auto |
 
@@ -48,7 +48,7 @@ El outbound arma un **link**; el prospecto abre la maqueta personalizada.
 
 ```
 
-Investigador.bat
+Roberto.bat
 
     → FASE 1   Maps + filtro cadenas
 
@@ -215,7 +215,7 @@ Con tus keys actuales: **audit=Cerebras/Cohere**, **copy/sections=GitHub** si Ge
 
 - Alternativa: Supabase bucket `brand-kits`.
 
-- **TTL 10 días (producción):** Los kits/maquetas y assets (JSON, logos, imágenes rehost) en Vercel Blob tienen **vida útil estricta de 10 días** para no saturar la cuota del plan Hobby. Si el prospecto no responde en ese plazo, la demo expira y el blob se borra. Purga automática al inicio de cada corrida (`preparador.js`) y vía `Investigador.bat` / `npm run limpiar-blob`. Variables: `BLOB_TTL_DAYS=10`, `BLOB_CLEANUP_ON_RUN=true` (poner `false` para desactivar solo en la corrida).
+- **TTL 10 días (producción):** Los kits/maquetas y assets (JSON, logos, imágenes rehost) en Vercel Blob tienen **vida útil estricta de 10 días** para no saturar la cuota del plan Hobby. Si el prospecto no responde en ese plazo, la demo expira y el blob se borra. Purga automática al inicio de cada corrida (`preparador.js`) y vía `Roberto.bat` / `npm run limpiar-blob`. Variables: `BLOB_TTL_DAYS=10`, `BLOB_CLEANUP_ON_RUN=true` (poner `false` para desactivar solo en la corrida).
 
 
 

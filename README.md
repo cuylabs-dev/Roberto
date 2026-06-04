@@ -1,4 +1,6 @@
-# Investigador de Prospectos (Bucle Outbound B2B)
+# Roberto — Investigador de Prospectos (Bucle Outbound B2B)
+
+> Motor local de prospección (Maps → kit Blob → Notion). Repo backup: [github.com/cuylabs-dev/Roberto](https://github.com/cuylabs-dev/Roberto)
 
 Scrapea Maps (**5 leads/día**, 12 rubros locales rotativos), genera **brand kits** (`?kit=slug` + `pri`/`sec`), sube imágenes y copy a **Vercel Blob**, y deja prospectos en **Notion** (incl. correo si se encuentra).
 
@@ -18,7 +20,7 @@ npm install
 npx playwright install chromium
 # .env desde .env.example
 
-Investigador.bat
+Roberto.bat
 node preparador.js --dry-run
 node scripts/audit-chains.js
 node scripts/pilot-brand-kit.js

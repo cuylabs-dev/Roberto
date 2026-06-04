@@ -61,7 +61,7 @@ npm run limpiar-blob
 npm run purgar-data   # solo data/ local; Notion/Obsidian manual
 ```
 
-`Investigador.bat` ejecuta `limpiar_blob.js` antes del pipeline.
+`Roberto.bat` ejecuta `limpiar_blob.js` antes del pipeline.
 
 ---
 
