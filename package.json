@@ -6,7 +6,9 @@
   "description": "Bucle outbound B2B: scrapea Google Maps, analiza con Gemini Flash, genera Maqueta URL + WhatsApp Link e inyecta leads en Notion.",
   "scripts": {
     "start": "node preparador.js",
-    "dry": "node preparador.js --dry-run"
+    "dry": "node preparador.js --dry-run",
+    "limpiar-blob": "node scripts/limpiar_blob.js",
+    "purgar-data": "node scripts/purgar_data_local.js"
   },
   "dependencies": {
     "@vercel/blob": "^0.27.3",

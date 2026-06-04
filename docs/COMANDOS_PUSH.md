@@ -27,7 +27,8 @@ En el proyecto Vercel → **Settings → Environment Variables**:
 | Variable | Dónde la sacas |
 |----------|----------------|
 | `BLOB_READ_WRITE_TOKEN` | Vercel → Storage → Blob → token (mismo valor que en `.env` del Investigador) |
-| `VITE_KIT_CDN_BASE` | Prefijo CDN Blob, ej. `https://xxxx.public.blob.vercel-storage.com` (sin barra final) |
+| `VITE_KIT_CDN_BASE` | `https://sofcoz0qb7t6uvab.public.blob.vercel-storage.com` (sin barra final) |
+| `BLOB_READ_WRITE_TOKEN` | Token que empieza con `vercel_blob_rw_` (no confundir con Gemini `AQ.`) |
 
 Redeploy ocurre solo al siguiente push; no hace falta deploy manual.
 
@@ -50,13 +51,27 @@ node scripts/pilot-brand-kit.js
 
 ---
 
-## 4. Seguridad del token Blob
+## 4. Retención Blob (TTL 10 días)
+
+Kits/maquetas en Vercel Blob expiran a los **10 días** (`BLOB_TTL_DAYS`). Purga manual o antes de cada corrida:
+
+```powershell
+cd C:\Users\gabit\Documents\Git\CuyLabs\Investigador_Prospectos
+npm run limpiar-blob
+npm run purgar-data   # solo data/ local; Notion/Obsidian manual
+```
+
+`Investigador.bat` ejecuta `limpiar_blob.js` antes del pipeline.
+
+---
+
+## 5. Seguridad del token Blob
 
 Si el token se filtró en chat o git: **regenerar** en Vercel Blob y actualizar solo `.env` + env de Vercel. Nunca subir `.env` a GitHub.
 
 ---
 
-## 5. Preview local de maquetas (sin esperar Vercel)
+## 6. Preview local de maquetas (sin esperar Vercel)
 
 ```powershell
 cd C:\Users\gabit\Documents\Git\CuyLabs\Plantillas-Web-Maestra

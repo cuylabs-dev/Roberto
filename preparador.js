@@ -13,7 +13,10 @@ import path from "node:path";
 import pLimit from "p-limit";
 import { config, assertConfig } from "./lib/config.js";
 import { scrapeMaps, enrichInstagramGallery, enrichBrandAssets } from "./lib/scraper.js";
-import { buildBrandKit, finalizeBrandKit } from "./lib/brandKit.js";
+import { purgeExpiredBlobs } from "./lib/blobCleanup.js";
+import { buildBrandKit, finalizeBrandKit, slugify } from "./lib/brandKit.js";
+import { ensureLeadImagesOnBlob } from "./lib/blobAssets.js";
+import { analyzeBrandFromLogo } from "./lib/brand.js";
 import {
   qualifyLead,
   appendSkipped,
@@ -67,6 +70,17 @@ async function main() {
 
   assertConfig({ dryRun: DRY_RUN });
   resetQualifyState();
+
+  if (config.blobReadWriteToken && process.env.BLOB_CLEANUP_ON_RUN !== "false") {
+    try {
+      const blob = await purgeExpiredBlobs({ dryRun: false });
+      log(
+        `Blob TTL ${blob.ttlDays}d: ${blob.deleted} eliminados, ${blob.kept} vigentes (corte ${blob.cutoff.toISOString().slice(0, 10)}).`,
+      );
+    } catch (err) {
+      log(`Blob cleanup omitido: ${err.message.split("\n")[0]}`);
+    }
+  }
 
   let schema = null;
   if (!DRY_RUN) {
@@ -177,16 +191,39 @@ async function main() {
   }
   log(`FASE 2 OK: ${processed.filter((l) => l.social?.post_images?.length).length}/${processed.length} con fotos IG.`);
 
-  log("FASE 2b: Logos y colores de marca...");
+  log("FASE 2b: Logos, correo web y assets...");
   await enrichBrandAssets(processed);
-  log(`FASE 2b OK: ${processed.filter((l) => l.logo_url).length}/${processed.length} con logo.`);
+  log(
+    `FASE 2b OK: ${processed.filter((l) => l.logo_url).length}/${processed.length} logo | ${processed.filter((l) => l.email).length} correo.`,
+  );
 
-  log("FASE 3: LLM + maquetas personalizadas...");
+  log("FASE 3: Blob + Vision + copy + maquetas...");
   resetEvaluateState();
-  const limit = pLimit(3);
+  const limit = pLimit(2);
   await Promise.all(
     processed.map((lead) =>
       limit(async () => {
+        const slug = slugify(lead.name);
+        lead.kit_slug = slug;
+        await ensureLeadImagesOnBlob(lead, slug);
+
+        const visionUrl = lead.maps_photo_blob || lead.logo_url || lead.maps_photo_url;
+        if (visionUrl) {
+          try {
+            const visual = await analyzeBrandFromLogo(
+              visionUrl,
+              lead,
+              lead.template_hint || lead.template || "corporativo",
+            );
+            if (visual?.brand_primary) {
+              lead.brand_primary = visual.brand_primary;
+              lead.brand_secondary = visual.brand_secondary || visual.brand_primary;
+            }
+          } catch {
+            /* evaluateWithGemini reintenta vision */
+          }
+        }
+
         const evalr = await evaluateWithGemini(lead);
         lead.template = evalr.template;
         lead.color = evalr.color;
@@ -199,6 +236,7 @@ async function main() {
         lead.subhead = evalr.subhead;
         lead.eyebrow = evalr.eyebrow;
         lead.brand_primary = evalr.brand_primary;
+        lead.brand_secondary = evalr.brand_secondary;
         lead.variant = evalr.variant;
         lead.pitch_angle = evalr.pitch_angle || lead.pitch_angle;
         lead.diagnostico = evalr.diagnostico;
@@ -208,17 +246,21 @@ async function main() {
 
         const kit = buildBrandKit(lead, evalr, lead.social || {});
         kit.llm_meta = evalr.llm_meta || kit.llm_meta;
-        const kitFinal = await finalizeBrandKit(kit);
+        const kitFinal = await finalizeBrandKit(kit, lead);
         lead.kit_slug = kitFinal.slug;
         lead.kit_url = kitFinal.manifestUrl || null;
 
         lead.maqueta_url = buildMaquetaUrl({
           name: lead.name,
           template: lead.template,
+          color: lead.color || evalr.color,
+          brand_primary: lead.brand_primary || evalr.brand_primary,
+          brand_secondary: lead.brand_secondary || evalr.brand_secondary,
           kitSlug: kitFinal.slug,
           phone_e164: lead.phone_e164,
           wa_link: lead.wa_link,
         });
+        if (lead.email) log(`   @ ${lead.email}`);
         lead.estado = "Prospecto";
         log(`   + Kit ${kitFinal.slug}${kitFinal.publish?.provider ? ` (${kitFinal.publish.provider})` : ""}`);
       }),

@@ -87,7 +87,7 @@ node scripts/test-guantelete.js
 
 
 
-## 3. Nichos (`SEARCH_MODE=balance`, 20 leads/día)
+## 3. Nichos (`SEARCH_MODE=balance`, **5 leads/día**, 12 rubros rotativos)
 
 
 
@@ -214,6 +214,8 @@ Con tus keys actuales: **audit=Cerebras/Cohere**, **copy/sections=GitHub** si Ge
 - Opcional: `KIT_PUBLIC_BASE_URL` o `VITE_KIT_CDN_BASE` en Plantillas (prefijo CDN).
 
 - Alternativa: Supabase bucket `brand-kits`.
+
+- **TTL 10 días (producción):** Los kits/maquetas y assets (JSON, logos, imágenes rehost) en Vercel Blob tienen **vida útil estricta de 10 días** para no saturar la cuota del plan Hobby. Si el prospecto no responde en ese plazo, la demo expira y el blob se borra. Purga automática al inicio de cada corrida (`preparador.js`) y vía `Investigador.bat` / `npm run limpiar-blob`. Variables: `BLOB_TTL_DAYS=10`, `BLOB_CLEANUP_ON_RUN=true` (poner `false` para desactivar solo en la corrida).
 
 
 
@@ -349,5 +351,5 @@ Ver `.env.example`. Críticas: `FACTORIA_BASE_URL`, `BLOB_READ_WRITE_TOKEN`, Gua
 
 
 
-*Última actualización: junio 2026 — Guantelete APIs, kit Blob, deploy solo vía GitHub.*
+*Última actualización: junio 2026 — Guantelete APIs, kit Blob **TTL 10d**, deploy solo vía GitHub.*
 

@@ -14,8 +14,8 @@ echo.
 
 if not exist "data" mkdir "data"
 
-REM Ejecuta el pipeline. Tee-Object = ves el progreso en vivo Y guarda log.
-powershell -NoProfile -ExecutionPolicy Bypass -Command "node preparador.js 2>&1 | Tee-Object -FilePath 'data\run.log'"
+REM TTL Blob 10 dias (produccion) + pipeline
+powershell -NoProfile -ExecutionPolicy Bypass -Command "node scripts/limpiar_blob.js 2>&1; node preparador.js 2>&1 | Tee-Object -FilePath 'data\run.log'"
 
 echo.
 echo ------------------------------------------------------------

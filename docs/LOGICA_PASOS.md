@@ -99,6 +99,10 @@ Orquestador: [`preparador.js`](../preparador.js).
 
 **Fallbacks:** LLM agotado → `sectionsCopy` por defecto en `brandKit.js` + copy local en `brand.js`. Sin Blob → kit local + estático en Plantillas para `npm run dev`.
 
+**Verificación web (Maps sin sitio):** búsqueda Google `"nombre" Lima sitio web`. Si dominio coincide con el negocio → **descartar** (`web_confirmada_google`). Si no hay web propia en resultados → **candidato** confirmado.
+
+**Retención Blob (producción):** Kits/maquetas y assets en Vercel Blob tienen **TTL estricto de 10 días** (plan Hobby). Demo expira si no hay respuesta del prospecto. Purga: [`lib/blobCleanup.js`](../lib/blobCleanup.js), `npm run limpiar-blob`, inicio de `preparador.js` e `Investigador.bat`. `BLOB_TTL_DAYS`, `BLOB_CLEANUP_ON_RUN`.
+
 **URL legacy:** si no hay `kitSlug`, sigue existiendo URL larga con `pri`, `head`, `sec`, etc.
 
 ---
@@ -132,6 +136,8 @@ Deploy factoría: **solo** `git push origin main` en Plantillas (Vercel sincroni
 ```bash
 node scripts/audit-chains.js    # cadenas REJECT/OK
 node scripts/pilot-brand-kit.js # checklist Baransu offline
+npm run limpiar-blob            # purga Blob >10d
+npm run purgar-data             # vacía data/ (reset pruebas)
 ```
 
 ---

@@ -1,6 +1,6 @@
 # Implementation Plan — Investigador de Prospectos (v7, fábrica + Guantelete)
 
-> **v7 (jun 2026):** Brand Kit (`?kit=slug`), router multi-API (Guantelete), Vercel Blob CDN, deploy factoría solo vía **`git push`** (GitHub → Vercel). Sin Together AI.
+> **v7 (jun 2026):** Brand Kit (`?kit=slug`), router multi-API (Guantelete), Vercel Blob CDN, **TTL Blob 10 días** (`lib/blobCleanup.js`), deploy factoría solo vía **`git push`** (GitHub → Vercel). Sin Together AI.
 >
 > v6: Contrato de Datos · Enums cerrados · Contrato URL legacy (`pri`, `head`, `sec`).
 > Costo: **$0/mes** con APIs gratuitas. Capacidad: **20 leads/día** (balance 5 nichos).
