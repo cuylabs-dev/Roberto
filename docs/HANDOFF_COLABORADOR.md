@@ -20,7 +20,7 @@ Documento para quien refine **plantillas** o mantenga el **Investigador** (Node)
 
 | **Roberto** (`Investigador_Prospectos/`) | Scrape Maps, brand kit, maquetas, Notion | Local (`Roberto.bat`) · backup [cuylabs-dev/Roberto](https://github.com/cuylabs-dev/Roberto) |
 
-| **Plantillas-Web-Maestra** | 6 landings React (`?kit=` o URL legacy) | **`git push origin main`** → GitHub → Vercel auto |
+| **Plantillas-Web-Maestra** | 7 landings React (`?kit=` o URL legacy) | **`git push origin main`** → GitHub → Vercel auto |
 
 
 
@@ -113,7 +113,7 @@ Fuente de verdad: [`lib/templatePolicy.js`](../lib/templatePolicy.js) (`NICHE_QU
 
 | Boutique | boutique ropa independiente Lima | `tiendas` (+ ecommerce) |
 
-| Inmobiliaria | inmobiliaria bienes raices Lima | `corporativo` |
+| Inmobiliaria | inmobiliaria bienes raices Lima | **`inmobiliarias`** |
 
 | Corporativo | consultora pequeña empresas Lima | `corporativo` |
 
