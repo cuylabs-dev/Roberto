@@ -3,7 +3,7 @@
 > **v7 (jun 2026):** Brand Kit (`?kit=slug`), router multi-API (Guantelete), Vercel Blob CDN, **TTL Blob 10 días** (`lib/blobCleanup.js`), deploy factoría solo vía **`git push`** (GitHub → Vercel). Sin Together AI.
 >
 > v6: Contrato de Datos · Enums cerrados · Contrato URL legacy (`pri`, `head`, `sec`).
-> Costo: **$0/mes** con APIs gratuitas. Capacidad: **20 leads/día** (balance 5 nichos).
+> Costo: **$0/mes** con APIs gratuitas. Capacidad: **10 leads/día** (balance **10 nichos** — ver `lib/templatePolicy.js`).
 
 ### v7 — componentes nuevos
 
@@ -13,6 +13,8 @@
 | Brand kit | `lib/brandKit.js`, `lib/kitStorage.js` |
 | Rehost fotos | `lib/imageRehost.js` |
 | Maqueta corta | `lib/urls.js` → `?kit=` |
+| Nichos / plantilla | `lib/templatePolicy.js`, `lib/classify.js` |
+| Google verify (sin web Maps) | `lib/googleWebDiscovery.js` |
 | Factoría kit | `Plantillas/src/lib/kit.ts`, `api/kit/[slug].js` |
 
 Docs: [LOGICA_PASOS.md](LOGICA_PASOS.md), [HANDOFF_COLABORADOR.md](HANDOFF_COLABORADOR.md), [COMANDOS_PUSH.md](COMANDOS_PUSH.md).
@@ -38,7 +40,7 @@ Mismos nombres y tipos en todo el pipeline: **Scraper → Gemini → Notion**.
   "address":     "string | null",
   "has_website": true,              // boolean
   "source":      "Maps | Facebook | Instagram | Ninguno",
-  "template":    "clinicas | corporativo | gimnasios | colegios | tiendas",
+  "template":    "clinicas | corporativo | gimnasios | colegios | tiendas | hoteles",
   "color":       "blue | green | red | violet | orange | slate",
   "font":        "inter | roboto | poppins | montserrat",
   "blocks":      ["login","reservas","ecommerce","galeria"], // 0+ módulos
@@ -71,7 +73,7 @@ Mismos nombres y tipos en todo el pipeline: **Scraper → Gemini → Notion**.
 ## 2. ENUMS CERRADOS (para que Gemini no rompa Notion)
 Gemini **debe** elegir solo de estas listas. El código valida y, si algo no encaja, castea a default + `estado=Revisar`.
 
-*   **template:** `clinicas` · `corporativo` · `gimnasios` · `colegios` · `tiendas`
+*   **template:** `clinicas` · `corporativo` · `gimnasios` · `colegios` · `tiendas` · **`hoteles`**
 *   **color:** `blue` · `green` · `red` · `violet` · `orange` · `slate`
 *   **font:** `inter` · `roboto` · `poppins` · `montserrat`
 *   **blocks:** `login` · `reservas` · `ecommerce` · `galeria`
@@ -101,7 +103,7 @@ Normalización de teléfono: quitar espacios/guiones/paréntesis, anteponer `51`
 ---
 
 ## FASE 0 — La Factoría Modular (ya existe en `cuylabs`)
-*   5 plantillas base: Clínicas, Corporativo, Gimnasios, Colegios, Tiendas.
+*   6 plantillas: Clínicas, Corporativo, Gimnasios, Colegios, Tiendas, **Hoteles**.
 *   Módulos dinámicos: Login, Reservas, E-commerce, Galería.
 *   Motor que lee parámetros de URL e inyecta textos / cambia colores Tailwind / tipografías.
 *   **Acción:** verificar/ajustar el lector de parámetros para que cumpla el Contrato de URL (§3).

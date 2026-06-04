@@ -2,9 +2,11 @@
 
 > Motor local de prospección (Maps → kit Blob → Notion). Repo backup: [github.com/cuylabs-dev/Roberto](https://github.com/cuylabs-dev/Roberto)
 
-Scrapea Maps (**5 leads/día**, 12 rubros locales rotativos), genera **brand kits** (`?kit=slug` + `pri`/`sec`), sube imágenes y copy a **Vercel Blob**, y deja prospectos en **Notion** (incl. correo si se encuentra).
+Scrapea Maps (**10 leads/día** máximo, **10 nichos** en rotación), genera **brand kits** (`?kit=slug` + `pri`/`sec`), sube imágenes y copy a **Vercel Blob**, y deja prospectos en **Notion** (incl. correo si se encuentra).
 
-**Producción:** Kits/maquetas en Blob tienen **TTL de 10 días**. Si Maps no muestra web, **Google verifica**: si hay web propia → descarta; si no encuentra → candidato.
+**6 plantillas factoría:** `clinicas`, `corporativo`, `gimnasios`, `colegios`, `tiendas`, **`hoteles`**.
+
+**Producción:** Kits/maquetas en Blob tienen **TTL de 10 días**. Si Maps no muestra web, **Google verifica** (Playwright): si hay web propia del negocio → descarta; si no → candidato.
 
 ## Documentación
 
@@ -20,7 +22,10 @@ npm install
 npx playwright install chromium
 # .env desde .env.example
 
-Roberto.bat
+# Escritorio: Roberto.bat (lanzador) → corre este repo
+.\Roberto.bat
+# o alias legacy: .\Investigador.bat
+
 node preparador.js --dry-run
 node scripts/audit-chains.js
 node scripts/pilot-brand-kit.js
@@ -41,7 +46,7 @@ Ver tabla completa en HANDOFF. **No** Together AI.
 
 ## Deploy factoría
 
-Solo en **Plantillas-Web-Maestra**: `git push origin main` → Vercel actualiza desde GitHub.
+Solo en **Plantillas-Web-Maestra**: `git push origin main` → Vercel actualiza desde GitHub (incl. plantilla `hoteles`).
 
 ## Repo hermano
 

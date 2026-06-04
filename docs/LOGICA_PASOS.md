@@ -1,4 +1,4 @@
-# Lógica de cada paso — Investigador de Prospectos
+# Lógica de cada paso — Roberto (Investigador de Prospectos)
 
 Referencia detallada de **qué hace cada FASE**, qué archivos intervienen, qué sale en disco/Notion y qué pasa si algo falla.
 
@@ -25,7 +25,7 @@ Orquestador: [`preparador.js`](../preparador.js).
 
 | | |
 |---|---|
-| **Entrada** | `LEADS_PER_DAY`, `SEARCH_MODE`, `lib/rotacion.js` (5 nichos Lima) |
+| **Entrada** | `LEADS_PER_DAY` (default **10**), `SEARCH_MODE=balance`, [`lib/templatePolicy.js`](../lib/templatePolicy.js) + [`lib/rotacion.js`](../lib/rotacion.js) (**10 nichos**) |
 | **Proceso** | Playwright abre Maps, busca por query, entra a cada ficha |
 | **Filtro rápido** | `qualifyFast()` en [`lib/qualify.js`](../lib/qualify.js) + [`data/chains.json`](../data/chains.json) — descarta cadenas (H&M, Smart Fit, dominios corporativos) |
 | **Salida** | Lista en memoria; backup parcial en `data/leads_del_dia.json` |
@@ -39,18 +39,21 @@ Orquestador: [`preparador.js`](../preparador.js).
 
 ## FASE 1.5 — Calificación web
 
-**Objetivo:** Decidir si el lead vale la pena (score 0–100) antes de gastar redes/LLM pesado.
+**Objetivo:** Decidir si el lead vale la pena (score 0–100) antes de gastar redes/LLM pesado. Tras calificar, **tope** `LEADS_PER_DAY` (10) antes de FASE 2.
 
 | | |
 |---|---|
 | **Entrada** | Candidatos FASE 1 con `website_url` o tier `no_web` |
 | **HTTP** | `auditWebsite()` — fetch home, señales (ecommerce, web grande, sin web) |
+| **Google verify** | Si Maps **no** muestra web: [`lib/googleWebDiscovery.js`](../lib/googleWebDiscovery.js) abre `google.com/search` con Playwright headless (`"nombre" Lima sitio web`). Dominio **similar** al negocio → **rechazar** (`web_confirmada_google`). Sin web propia → candidato confirmado. Opcional: correo en SERP o en la web encontrada. |
 | **LLM borderline** | `qualifyWithGemini()` → router `audit` o `longcontext` (HTML > 8 KB) |
 | **Cadena audit** | Cerebras → Cohere → … → Gemini → AI21 → **SambaNova al final** ([GUANTELETE_ROLES.md](GUANTELETE_ROLES.md)) |
 | **Umbral** | `QUALIFY_MIN_SCORE` (default 65) — debajo → `data/skipped_YYYYMMDD.json` |
 | **Salida** | `opportunity_score`, `gaps`, `pitch_angle`, `tier`, `llm_meta` |
 
-**Fallbacks:** sin API LLM → solo heurísticas HTTP. 429 en todos → `quotaSkipQualifyGemini` y sigue con score HTTP.
+**Fallbacks:** sin API LLM → solo heurísticas HTTP. 429 en todos → `quotaSkipQualifyGemini` y sigue con score HTTP. Google bloqueado/CAPTCHA → no descarta por web confirmada (sigue como candidato sin verificación).
+
+**¿`google-sr` / `googlethis`?** No integrados: con 10 leads/día el volumen de SERP es bajo; los scrapers NPM rompen a menudo y Meta/Google bloquean igual. Playwright ya está en el proyecto y parsea el HTML real.
 
 ---
 
@@ -101,7 +104,9 @@ Orquestador: [`preparador.js`](../preparador.js).
 
 **Verificación web (Maps sin sitio):** búsqueda Google `"nombre" Lima sitio web`. Si dominio coincide con el negocio → **descartar** (`web_confirmada_google`). Si no hay web propia en resultados → **candidato** confirmado.
 
-**Retención Blob (producción):** Kits/maquetas y assets en Vercel Blob tienen **TTL estricto de 10 días** (plan Hobby). Demo expira si no hay respuesta del prospecto. Purga: [`lib/blobCleanup.js`](../lib/blobCleanup.js), `npm run limpiar-blob`, inicio de `preparador.js` e `Investigador.bat`. `BLOB_TTL_DAYS`, `BLOB_CLEANUP_ON_RUN`.
+**Retención Blob (producción):** Kits/maquetas y assets en Vercel Blob tienen **TTL estricto de 10 días** (plan Hobby). Demo expira si no hay respuesta del prospecto. Purga: [`lib/blobCleanup.js`](../lib/blobCleanup.js), `npm run limpiar-blob`, inicio de `preparador.js` y **`Roberto.bat`**. `BLOB_TTL_DAYS`, `BLOB_CLEANUP_ON_RUN`.
+
+**Plantillas factoría (6):** `clinicas`, `corporativo`, `gimnasios`, `colegios`, `tiendas`, `hoteles`. Política bloques: [`lib/templatePolicy.js`](../lib/templatePolicy.js) — solo boutique lleva `ecommerce`; hoteles usan `reservas` + `galeria`.
 
 **URL legacy:** si no hay `kitSlug`, sigue existiendo URL larga con `pri`, `head`, `sec`, etc.
 

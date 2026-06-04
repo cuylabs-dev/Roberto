@@ -167,16 +167,21 @@ async function main() {
   );
 
   appendSkipped(allSkipped);
-  log(`FASE 1.5 OK: ${qualified.length}/${rawLeads.length} pasan (umbral ${config.qualifyMinScore}).`);
+  log(`FASE 1.5 OK: ${qualified.length}/${rawLeads.length} pasan → procesamos ${Math.min(qualified.length, config.leadsPerDay)}.`);
 
   if (!qualified.length) {
     log("Sin leads calificados. Revisa data/skipped_*.json o baja QUALIFY_MIN_SCORE.");
     return;
   }
 
+  const capped = qualified.slice(0, config.leadsPerDay);
+  if (capped.length < qualified.length) {
+    log(`Tope ${config.leadsPerDay} leads (se omiten ${qualified.length - capped.length} calificados extra).`);
+  }
+
   log("FASE 2: Redes (Instagram/FB) + galeria...");
   const processed = [];
-  for (const lead of qualified) {
+  for (const lead of capped) {
     await enrichInstagramGallery(lead);
     const social = lead.social || {};
     const phone_raw = lead.phone_raw || social.phone_raw;

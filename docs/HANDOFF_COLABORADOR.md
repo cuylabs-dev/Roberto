@@ -20,7 +20,7 @@ Documento para quien refine **plantillas** o mantenga el **Investigador** (Node)
 
 | **Roberto** (`Investigador_Prospectos/`) | Scrape Maps, brand kit, maquetas, Notion | Local (`Roberto.bat`) · backup [cuylabs-dev/Roberto](https://github.com/cuylabs-dev/Roberto) |
 
-| **Plantillas-Web-Maestra** | 5 landings React (`?kit=` o URL legacy) | **`git push origin main`** → GitHub → Vercel auto |
+| **Plantillas-Web-Maestra** | 6 landings React (`?kit=` o URL legacy) | **`git push origin main`** → GitHub → Vercel auto |
 
 
 
@@ -87,27 +87,45 @@ node scripts/test-guantelete.js
 
 
 
-## 3. Nichos (`SEARCH_MODE=balance`, **5 leads/día**, 12 rubros rotativos)
+## 3. Nichos y plantillas (`SEARCH_MODE=balance`, **10 leads/día** máximo)
 
 
 
-| Nicho | Búsqueda | Leads/día |
-
-|-------|----------|-----------|
-
-| Gym | gimnasio local Lima | 4 |
-
-| Colegio | colegios Lima | 4 |
-
-| Clínica | clínica dental barrio Lima | 4 |
-
-| Tienda | boutique ropa independiente Lima | 4 |
-
-| Corporativo | consultora pequeña empresas Lima | 4 |
+Fuente de verdad: [`lib/templatePolicy.js`](../lib/templatePolicy.js) (`NICHE_QUERIES`). Cupos: [`lib/rotacion.js`](../lib/rotacion.js). Clasificación por nombre/categoría Maps: [`lib/classify.js`](../lib/classify.js).
 
 
 
-`QUALIFY_MIN_SCORE=65`. Cadenas en `data/chains.json`. Rotación: `lib/rotacion.js`.
+| Nicho | Query Maps (ej.) | Plantilla |
+
+|-------|------------------|------------|
+
+| Gym | gimnasio local Lima | `gimnasios` |
+
+| Gym peleas | muay thai boxeo mma gym Lima | `gimnasios` |
+
+| Colegio | colegio academia Lima | `colegios` |
+
+| Clínica (cualquier especialidad) | clinica medica Lima | `clinicas` |
+
+| Farmacia | farmacia independiente Lima | `clinicas` |
+
+| Spa / belleza | spa belleza estetica Lima | `clinicas` |
+
+| Boutique | boutique ropa independiente Lima | `tiendas` (+ ecommerce) |
+
+| Inmobiliaria | inmobiliaria bienes raices Lima | `corporativo` |
+
+| Corporativo | consultora pequeña empresas Lima | `corporativo` |
+
+| Hotel / hostal | hotel hostal boutique Lima | **`hoteles`** |
+
+
+
+`LEADS_PER_DAY=10` (tope duro en `preparador.js`). `QUALIFY_MIN_SCORE=65`. Cadenas: `data/chains.json`.
+
+
+
+**Google Search (FASE 1.5):** solo Playwright headless en [`lib/googleWebDiscovery.js`](../lib/googleWebDiscovery.js) — verifica web/correo cuando Maps no muestra sitio. No usamos paquetes `google-sr` / `googlethis` (ver LOGICA_PASOS).
 
 
 
@@ -311,7 +329,11 @@ Ver `.env.example`. Críticas: `FACTORIA_BASE_URL`, `BLOB_READ_WRITE_TOKEN`, Gua
 
 | `lib/llm/router.js` | Cadena de proveedores |
 
-| `lib/rotacion.js` | Cupos por nicho |
+| `lib/templatePolicy.js` | Nichos → plantilla + bloques |
+
+| `lib/rotacion.js` | Reparte `LEADS_PER_DAY` entre nichos |
+
+| `lib/googleWebDiscovery.js` | Verificación web Google (sin sitio en Maps) |
 
 
 
@@ -351,5 +373,5 @@ Ver `.env.example`. Críticas: `FACTORIA_BASE_URL`, `BLOB_READ_WRITE_TOKEN`, Gua
 
 
 
-*Última actualización: junio 2026 — Guantelete APIs, kit Blob **TTL 10d**, deploy solo vía GitHub.*
+*Última actualización: junio 2026 — 10 nichos, 6 plantillas (`hoteles`), 10 leads/día, FASE 2 IG sin cambios (perfil cuy), Google verify vía Playwright.*
 

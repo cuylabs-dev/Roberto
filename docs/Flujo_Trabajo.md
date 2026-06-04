@@ -2,9 +2,9 @@
 
 ## Resumen diario
 
-1. Revisar `.env` (Guantelete + Blob + Notion). Blob: TTL **10 días** (`BLOB_TTL_DAYS`); purga con `npm run limpiar-blob` o al arrancar `Investigador.bat`.
-2. Cerrar Chrome si usarás FASE 2 (perfil cuy).
-3. Ejecutar `Investigador.bat` o `node preparador.js`.
+1. Revisar `.env` (Guantelete + Blob + Notion). Blob: TTL **10 días** (`BLOB_TTL_DAYS`); purga con `npm run limpiar-blob` o al arrancar **`Roberto.bat`** (alias `Investigador.bat`).
+2. Cerrar Chrome si usarás FASE 2 (perfil cuy) — **sin cambios** en scraper IG.
+3. Ejecutar `Roberto.bat` o `node preparador.js` (máx. **10** leads calificados por corrida).
 4. Revisar Notion CRM y abrir maquetas `?kit=`.
 5. WhatsApp manual desde Notion.
 

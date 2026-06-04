@@ -12,11 +12,13 @@ No uses el botón "Deploy" en Vercel. El flujo es **push a `main`**.
 cd C:\Users\gabit\Documents\Git\CuyLabs\Plantillas-Web-Maestra
 git add -A
 git status
-git commit -m "feat: kit CDN Guantelete y docs"
+git commit -m "feat: plantilla hoteles (6ta) y catalogo"
 git push origin main
 ```
 
 Espera 1–3 min y abre: https://plantillas-web-maestra-final.vercel.app
+
+Plantillas actuales: `clinicas`, `corporativo`, `gimnasios`, `colegios`, `tiendas`, **`hoteles`**. Preview hotel: `/?kit=slug&template=hoteles` (o solo `?kit=` si el manifest trae `template`).
 
 ---
 
@@ -46,7 +48,7 @@ npx playwright install chromium
 
 node scripts/audit-chains.js
 node scripts/pilot-brand-kit.js
-.\Investigador.bat
+.\Roberto.bat
 ```
 
 ---

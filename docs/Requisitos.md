@@ -9,7 +9,7 @@
 | Tema | Decisión |
 |------|----------|
 | Deploy factoría | **`git push`** a Plantillas; Vercel sincroniza desde GitHub (sin Deploy manual) |
-| Nichos | `SEARCH_MODE=balance`, 20 leads → 4×5 rubros |
+| Nichos | `SEARCH_MODE=balance`, **10 nichos** en `lib/templatePolicy.js`, tope **10 leads/día** |
 | LLM | Router Guantelete + Gemini; ver HANDOFF |
 | Kits | `BLOB_READ_WRITE_TOKEN` o Supabase o `public/kits/` local |
 | Anti-repetición | Obsidian `_registro_prospectos.json` |
@@ -57,7 +57,7 @@
 
 | Variable | Uso |
 |----------|-----|
-| `LEADS_PER_DAY` | 20 |
+| `LEADS_PER_DAY` | **10** (máximo procesados por corrida) |
 | `QUALIFY_MIN_SCORE` | 65 |
 | `NOTION_TOKEN` / `NOTION_DATABASE_ID` | CRM |
 | `OBSIDIAN_DB_DIR` | Memoria scrape |

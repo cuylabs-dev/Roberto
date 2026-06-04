@@ -1,7 +1,8 @@
 @echo off
 chcp 65001 >nul
 title Investigador de Prospectos - Bucle Outbound B2B
-cd /d "C:\Users\gabit\Documents\Git\CuyLabs\Investigador_Prospectos"
+set "ROOT=C:\Users\gabit\Documents\Git\CuyLabs\Investigador_Prospectos"
+cd /d "%ROOT%"
 
 echo ============================================================
 echo    INVESTIGADOR DE PROSPECTOS  -  Bucle Outbound B2B
@@ -14,8 +15,7 @@ echo.
 
 if not exist "data" mkdir "data"
 
-REM TTL Blob 10 dias (produccion) + pipeline
-powershell -NoProfile -ExecutionPolicy Bypass -Command "node scripts/limpiar_blob.js 2>&1; node preparador.js 2>&1 | Tee-Object -FilePath 'data\run.log'"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath '%ROOT%'; node scripts/limpiar_blob.js 2>&1; node preparador.js 2>&1 | Tee-Object -FilePath 'data\run.log'"
 
 echo.
 echo ------------------------------------------------------------
