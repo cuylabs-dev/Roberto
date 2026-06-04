@@ -107,9 +107,11 @@ Fuente de verdad: [`lib/templatePolicy.js`](../lib/templatePolicy.js) (`NICHE_QU
 
 | Clínica (cualquier especialidad) | clinica medica Lima | `clinicas` |
 
-| Farmacia | farmacia independiente Lima | `clinicas` |
+| Spa | spa masajes bienestar Lima | **`spas`** |
 
-| Spa / belleza | spa belleza estetica Lima | `clinicas` |
+| Estética | centro estetica facial corporal Lima | **`estetica`** |
+
+| *(excluido)* | farmacias / veterinarias / pharma | no entran al pipeline |
 
 | Boutique | boutique ropa independiente Lima | `tiendas` (+ ecommerce) |
 
@@ -363,6 +365,7 @@ Ver `.env.example`. Críticas: `FACTORIA_BASE_URL`, `BLOB_READ_WRITE_TOKEN`, Gua
 
 
 
+- [PLAN_COPY_APIS.md](PLAN_COPY_APIS.md) — qué API hace qué + plan copy personalizado
 - [LOGICA_PASOS.md](LOGICA_PASOS.md)
 
 - [Requisitos.md](Requisitos.md)
